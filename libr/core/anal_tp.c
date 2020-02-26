@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2016-2018 - oddcoder, sivaramaaa */
+/* radare - LGPL - Copyright 2016-2020 - oddcoder, sivaramaaa */
 /* type matching - type propagation */
 
 #include <r_anal.h>
@@ -73,26 +73,22 @@ static void var_rename(RAnal *anal, RAnalVar *v, const char *name, ut64 addr) {
 	r_anal_var_rename (anal, fcn->addr, 1, v->kind, v->name, name, false);
 }
 
-static void var_retype(RAnal *anal, RAnalVar *var, const char *vname, char *type, ut64 addr, bool ref, bool pfx) {
-	if (!type || !var) {
-		return;
-	}
-	char *trim = type;
-	r_str_trim (trim);
-	if (!*trim) {
-		return;
-	}
+static void var_retype(RAnal *anal, RAnalVar *var, const char *vname, const char *type, ut64 addr, bool ref, bool pfx) {
+	r_return_if_fail (anal && var && type);
+	// XXX types should be passed without spaces to trim
+	type = r_str_trim_head_ro (type);
 	bool is_ptr = (vname && *vname == '*');
-	if (!strncmp (trim, "int", 3) || (!is_ptr && !strcmp (trim, "void"))) {
+	// removing this return makes 64bit vars become 32bit
+	if (!strncmp (type, "int", 3) || (!is_ptr && !strcmp (type, "void"))) {
 		// default or void type
 		return;
 	}
 	const char *expand = var->type;
-	if (!strcmp(var->type, "int32_t")) {
+	if (!strcmp (var->type, "int32_t")) {
 		expand = "int";
-	} else if (!strcmp(var->type, "uint32_t")) {
+	} else if (!strcmp (var->type, "uint32_t")) {
 		expand = "unsigned int";
-	} else if (!strcmp(var->type, "uint64_t")) {
+	} else if (!strcmp (var->type, "uint64_t")) {
 		expand = "unsigned long long";
 	}
 	const char *tmp = strstr (expand, "int");
@@ -111,7 +107,7 @@ static void var_retype(RAnal *anal, RAnalVar *var, const char *vname, char *type
 			return;
 		}
 	} else {
-		r_strbuf_set (sb, trim);
+		r_strbuf_set (sb, type);
 	}
 	if (!strncmp (r_strbuf_get (sb), "const ", 6)) {
 		// Dropping const from type
@@ -202,13 +198,13 @@ static _RAnalCond cond_invert(RAnal *anal, _RAnalCond cond) {
 #define RKEY(a,k,d) sdb_fmt ("var.range.0x%"PFMT64x ".%c.%d", a, k, d)
 #define ADB a->sdb_fcns
 
-static void var_add_range (RAnal *a, RAnalVar *var, _RAnalCond cond, ut64 val) {
+static void var_add_range(RAnal *a, RAnalVar *var, _RAnalCond cond, ut64 val) {
 	const char *key = RKEY (var->addr, var->kind, var->delta);
 	sdb_array_append_num (ADB, key, cond, 0);
 	sdb_array_append_num (ADB, key, val, 0);
 }
 
-R_API RStrBuf *var_get_constraint (RAnal *a, RAnalVar *var) {
+R_API RStrBuf *var_get_constraint(RAnal *a, RAnalVar *var) {
 	const char *key = RKEY (var->addr, var->kind, var->delta);
 	int i, n = sdb_array_length (ADB, key);
 
@@ -446,7 +442,7 @@ static void type_match(RCore *core, ut64 addr, char *fcn_name, ut64 baddr, const
 				get_src_regname (core, instr_addr, tmp, sizeof (tmp));
 				ut64 ptr = get_addr (trace, tmp, j);
 				if (ptr == xaddr) {
-					var_retype (anal, var, name, type, addr, memref, false);
+					var_retype (anal, var, name, type? type: "int", addr, memref, false);
 				}
 			}
 			r_anal_op_free (op);
