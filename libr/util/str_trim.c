@@ -93,7 +93,7 @@ R_API const char *r_str_trim_head_ro(const char *str) {
 // TODO: find better name
 R_API const char *r_str_trim_head_wp(const char *str) {
 	r_return_val_if_fail (str, NULL);
-	for (; *str && IS_WHITECHAR (*str); str++) {
+	for (; *str && !IS_WHITECHAR (*str); str++) {
 		;
 	}
 	return str;
