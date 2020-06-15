@@ -152,6 +152,7 @@
   #ifdef _MSC_VER
   /* Must be included before windows.h */
   #include <winsock2.h>
+  #include <ws2tcpip.h>
   #ifndef WIN32_LEAN_AND_MEAN
   #define WIN32_LEAN_AND_MEAN
   #endif
@@ -287,7 +288,7 @@ typedef int (*PrintfCallback)(const char *str, ...);
 #define R_LIB_VERSION_HEADER(x) \
 R_API const char *x##_version(void)
 #define R_LIB_VERSION(x) \
-R_API const char *x##_version() { return "" R2_GITTAP; }
+R_API const char *x##_version(void) { return "" R2_GITTAP; }
 
 #define BITS2BYTES(x) (((x)/8)+(((x)%8)?1:0))
 #define ZERO_FILL(x) memset (&x, 0, sizeof (x))

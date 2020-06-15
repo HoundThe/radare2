@@ -896,7 +896,11 @@ static int bin_dwarf(RCore *core, int mode) {
 		// TODO: complete and speed-up support for dwarf
 		RBinDwarfDebugAbbrev *da = NULL;
 		da = r_bin_dwarf_parse_abbrev (core->bin, mode);
-		r_bin_dwarf_parse_info (da, core->bin, mode);
+		RBinDwarfDebugInfo *info = r_bin_dwarf_parse_info (da, core->bin, mode);
+		// dig types out of into and then free
+		r_bin_dwarf_parse_types(info);
+		r_bin_dwarf_free_debug_info(info);
+		
 		r_bin_dwarf_parse_aranges (core->bin, mode);
 		list = ownlist = r_bin_dwarf_parse_line (core->bin, mode);
 		r_bin_dwarf_free_debug_abbrev (da);
@@ -2352,7 +2356,7 @@ next:
 
 static char *build_hash_string(int mode, const char *chksum, ut8 *data, ut32 datalen) {
 	char *chkstr = NULL, *aux, *ret = NULL;
-	RList *hashlist = r_str_split_duplist (chksum, ",");
+	RList *hashlist = r_str_split_duplist (chksum, ",", true);
 	RListIter *iter;
 	char *hashname;
 	r_list_foreach (hashlist, iter, hashname) {
@@ -2382,7 +2386,7 @@ static char *filter_hash_string(const char *chksum) {
 
 	char *aux, *ret = NULL;
 	bool isFirst = true;
-	RList *hashlist = r_str_split_duplist (chksum, ",");
+	RList *hashlist = r_str_split_duplist (chksum, ",", true);
 	RListIter *iter;
 	char *hashname;
 	r_list_foreach (hashlist, iter, hashname) {

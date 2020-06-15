@@ -28,8 +28,8 @@ extern "C" {
 #define DW_LNE_set_address              0x02
 #define DW_LNE_define_file              0x03
 #define DW_LNE_set_discriminator        0x04  /* DWARF4 */
-#define DW_LNE_lo_user			0x80
-#define DW_LNE_hi_user			0xff
+#define DW_LNE_lo_user					0x80
+#define DW_LNE_hi_user					0xff
 
 /* HP extensions. */
 #define DW_LNE_HP_negate_is_UV_update       0x11 /* 17 HP */
@@ -47,6 +47,7 @@ extern "C" {
 #define DW_LNE_hi_user                  0xff /* DWARF3 */
 
 /* debug_info tags */
+#define DW_TAG_null_entry               0x00
 #define DW_TAG_array_type               0x01
 #define DW_TAG_class_type               0x02
 #define DW_TAG_entry_point              0x03
@@ -110,7 +111,7 @@ extern "C" {
 #define DW_TAG_partial_unit             0x3c  /* DWARF3 */
 #define DW_TAG_imported_unit            0x3d  /* DWARF3 */
         /*  Do not use DW_TAG_mutable_type */
-#define DW_TAG_mutable_type 0x3e /* Withdrawn from DWARF3 by DWARF3f. */
+#define DW_TAG_mutable_type 			0x3e /* Withdrawn from DWARF3 by DWARF3f. */
 #define DW_TAG_condition                0x3f  /* DWARF3f */
 #define DW_TAG_shared_type              0x40  /* DWARF3f */
 #define DW_TAG_type_unit                0x41  /* DWARF4 */
@@ -118,15 +119,16 @@ extern "C" {
 #define DW_TAG_template_alias           0x43  /* DWARF4 */
 
 #define DW_TAG_LAST                     0x44  // correct ?
-#define DW_TAG_lo_user			0x4080
-#define DW_TAG_hi_user			0xffff
+/* <_lo_user ; _hi_user> Interval is reserved for vendor extensions */
+#define DW_TAG_lo_user					0x4080
+#define DW_TAG_hi_user					0xffff
 
 #define DW_CHILDREN_no			0x00
 #define DW_CHILDREN_yes			0x01
 
 #define DW_AT_sibling			0x01
 #define DW_AT_location			0x02
-#define DW_AT_name			0x03
+#define DW_AT_name				0x03
 #define DW_AT_ordering			0x09
 #define DW_AT_byte_size			0x0b
 #define DW_AT_bit_offset		0x0c
@@ -135,15 +137,15 @@ extern "C" {
 #define DW_AT_low_pc			0x11
 #define DW_AT_high_pc			0x12
 #define DW_AT_language			0x13
-#define DW_AT_discr			0x15
+#define DW_AT_discr				0x15
 #define DW_AT_discr_value		0x16
 #define DW_AT_visibility		0x17
 #define DW_AT_import			0x18
 #define DW_AT_string_length		0x19
-#define DW_AT_common_reference		0x1a
+#define DW_AT_common_reference	0x1a
 #define DW_AT_comp_dir			0x1b
 #define DW_AT_const_value		0x1c
-#define DW_AT_containing_type		0x1d
+#define DW_AT_containing_type	0x1d
 #define DW_AT_default_value		0x1e
 #define DW_AT_inline			0x20
 #define DW_AT_is_optional		0x21
@@ -154,13 +156,13 @@ extern "C" {
 #define DW_AT_start_scope		0x2c
 #define DW_AT_stride_size		0x2e
 #define DW_AT_upper_bound		0x2f
-#define DW_AT_abstract_origin		0x31
+#define DW_AT_abstract_origin	0x31
 #define DW_AT_accessibility		0x32
 #define DW_AT_address_class		0x33
 #define DW_AT_artificial		0x34
 #define DW_AT_base_types		0x35
 #define DW_AT_calling_convention	0x36
-#define DW_AT_count			0x37
+#define DW_AT_count				0x37
 #define DW_AT_data_member_location	0x38
 #define DW_AT_decl_column		0x39
 #define DW_AT_decl_file			0x3a
@@ -171,19 +173,19 @@ extern "C" {
 #define DW_AT_external			0x3f
 #define DW_AT_frame_base		0x40
 #define DW_AT_friend			0x41
-#define DW_AT_identifier_case		0x42
+#define DW_AT_identifier_case	0x42
 #define DW_AT_macro_info		0x43
 #define DW_AT_namelist_item		0x44
 #define DW_AT_priority			0x45
 #define DW_AT_segment			0x46
 #define DW_AT_specification		0x47
 #define DW_AT_static_link		0x48
-#define DW_AT_type			0x49
+#define DW_AT_type				0x49
 #define DW_AT_use_location		0x4a
 #define DW_AT_variable_parameter	0x4b
 #define DW_AT_virtuality		0x4c
 #define DW_AT_vtable_elem_location	0x4d
-#define DW_AT_allocated			0x4e
+#define DW_AT_allocated			0x4e // DWARF 3 additions start
 #define DW_AT_associated		0x4f
 #define DW_AT_data_location		0x50
 #define DW_AT_byte_stride		0x51
@@ -198,25 +200,61 @@ extern "C" {
 #define DW_AT_description		0x5a
 #define DW_AT_binary_scale		0x5b
 #define DW_AT_decimal_scale		0x5c
-#define DW_AT_small			0x5d
+#define DW_AT_small				0x5d
 #define DW_AT_decimal_sign		0x5e
 #define DW_AT_digit_count		0x5f
-#define DW_AT_picture_string		0x60
+#define DW_AT_picture_string	0x60
 #define DW_AT_mutable			0x61
-#define DW_AT_threads_scaled		0x62
+#define DW_AT_threads_scaled	0x62
 #define DW_AT_explicit			0x63
-#define DW_AT_object_pointer		0x64
+#define DW_AT_object_pointer	0x64
 #define DW_AT_endianity			0x65
 #define DW_AT_elemental			0x66
-#define DW_AT_pure			0x67
-#define DW_AT_recursive			0x68
+#define DW_AT_pure				0x67
+#define DW_AT_recursive			0x68 // DWARF 3 additions end
 #define DW_AT_signature			0x69
-#define DW_AT_main_subprogram		0x6a
-#define DW_AT_data_big_offset		0x6b
+#define DW_AT_main_subprogram	0x6a
+#define DW_AT_data_big_offset	0x6b
 #define DW_AT_const_expr		0x6c
 #define DW_AT_enum_class		0x6d
 #define DW_AT_linkage_name		0x6e
+
+#define DW_AT_string_length_bit_size	0x6f
+#define DW_AT_string_length_byte_size	0x70
+#define DW_AT_rank						0x71
+#define DW_AT_str_offsets_base			0x72
+#define DW_AT_addr_base					0x73
+#define DW_AT_rnglists_base				0x74
+// #define Reserved 0x75 Unused
+#define DW_AT_dwo_name					0x76
+#define DW_AT_reference					0x77
+#define DW_AT_rvalue_reference 			0x78
+#define DW_AT_macros					0x79
+#define DW_AT_call_all_calls 			0x7a
+#define DW_AT_call_all_source_calls 	0x7b
+#define DW_AT_call_all_tail_calls		0x7c
+#define DW_AT_call_return_pc			0x7d
+#define DW_AT_call_value				0x7e
+#define DW_AT_call_origin				0x7f
+#define DW_AT_call_parameter			0x80
+#define DW_AT_call_pc  					0x81 
+#define DW_AT_call_tail_call 			0x82 
+#define DW_AT_call_target  				0x83 
+#define DW_AT_call_target_clobbered  	0x84 
+#define DW_AT_call_data_location 		0x85 
+#define DW_AT_call_data_value 			0x86 
+#define DW_AT_noreturn  				0x87 
+#define DW_AT_alignment  				0x88 
+#define DW_AT_export_symbols  			0x89 
+#define DW_AT_deleted  					0x8a 
+#define DW_AT_defaulted  				0x8b 
+#define DW_AT_loclists_base				0x8c 
+
+/* <_lo_user ; _hi_user> Interval is reserved for vendor extensions */
 #define DW_AT_lo_user			0x2000
+// extensions:
+#define DW_AT_GNU_all_tail_call_sites 0x2116
+
 #define DW_AT_hi_user			0x3fff
 
 #define DW_FORM_addr			0x01
@@ -240,10 +278,28 @@ extern "C" {
 #define DW_FORM_ref8			0x14
 #define DW_FORM_ref_udata		0x15
 #define DW_FORM_indirect		0x16
-#define DW_FORM_sec_offset		0x17
+#define DW_FORM_sec_offset		0x17 // DWARF 4 new attribute for section offset
 #define DW_FORM_exprloc			0x18
-#define DW_FORM_flag_present		0x19
+#define DW_FORM_flag_present	0x19
+#define DW_FORM_strx			0x1a
+#define DW_FORM_addrx			0x1b
+#define DW_FORM_ref_sup4		0x1c
+#define DW_FORM_strp_sup		0x1d
+#define DW_FORM_data16			0x1e
+#define DW_FORM_line_ptr		0x1f
 #define DW_FORM_ref_sig8		0x20
+#define DW_FORM_implicit_const	0x21
+#define DW_FORM_loclistx		0x22
+#define DW_FORM_rnglistx		0x23
+#define DW_FORM_ref_sup8		0x24
+#define DW_FORM_strx1			0x25
+#define DW_FORM_strx2			0x26
+#define DW_FORM_strx3			0x27
+#define DW_FORM_strx4			0x28
+#define DW_FORM_addrx1			0x29
+#define DW_FORM_addrx2			0x2a
+#define DW_FORM_addrx3			0x2b
+#define DW_FORM_addrx4			0x2c
 
 #define DW_OP_addr			0x03
 #define DW_OP_deref			0x06
@@ -399,6 +455,8 @@ extern "C" {
 #define DW_OP_bit_piece			0x9d
 #define DW_OP_implicit_value		0x9e
 #define DW_OP_stack_value		0x9f
+
+/* <_lo_user ; _hi_user> Interval is reserved for vendor extensions */
 #define DW_OP_lo_user			0xe0
 #define DW_OP_hi_user			0xff
 
@@ -419,6 +477,8 @@ extern "C" {
 #define DW_ATE_unsigned_fixed		0x0e
 #define DW_ATE_decimal_float		0x0f
 #define DW_ATE_UTF			0x10
+
+/* <_lo_user ; _hi_user> Interval is reserved for vendor extensions */
 #define DW_ATE_lo_user			0x80
 #define DW_ATE_hi_user			0xff
 
@@ -431,6 +491,8 @@ extern "C" {
 #define DW_END_default			0x00
 #define DW_END_big			0x01
 #define DW_END_little			0x02
+
+/* <_lo_user ; _hi_user> Interval is reserved for vendor extensions */
 #define DW_END_lo_user			0x40
 #define DW_END_hi_user			0xff
 
@@ -536,6 +598,15 @@ extern "C" {
 #define DW_CFA_lo_user			0x1c
 #define DW_CFA_hi_user			0x3f
 
+#define DW_UT_compile			0x01
+#define DW_UT_type				0x02
+#define DW_UT_partial			0x03
+#define DW_UT_skeleton			0x04
+#define DW_UT_split_compile		0x05
+#define DW_UT_split_type		0x06
+#define DW_UT_lo_user			0x80
+#define DW_UT_hi_user			0xff
+
 typedef struct {
 	ut32 total_length;
 	ut16 version;
@@ -569,11 +640,6 @@ typedef struct {
 	unsigned int column;
 } RBinDwarfRow;
 
-typedef struct {
-	ut32 part1;
-	ut64 part2;
-} initial_length;
-
 #define DWARF_INIT_LEN_64	0xffffffff
 typedef union {
 	ut32 offset32;
@@ -581,14 +647,7 @@ typedef union {
 } section_offset;
 
 typedef struct {
-	initial_length unit_length;
-	ut16 version;
-	section_offset debug_abbrev_offset;
-	ut8 address_size;
-} RBinDwarfCompilationUnitHeader;
-
-typedef struct {
-	initial_length unit_length;
+	ut64 unit_length;
 	ut16 version;
 	section_offset debug_abbrev_offset;
 	ut8 address_size;
@@ -597,7 +656,7 @@ typedef struct {
 } RBinDwarfTypeUnitHeader;
 
 typedef struct {
-	initial_length unit_length;
+	ut64 unit_length;
 	ut16 version;
 	section_offset debug_info_offset;
 	ut8 address_size;
@@ -607,38 +666,51 @@ typedef struct {
 typedef struct {
 	ut64	attr_name;
 	ut64	attr_form;
-} RBinDwarfAttrSpec;
+	st64	special; // Used for values coded directly into abbrev
+} RBinDwarfAttrDef;
 
 typedef struct {
 	ut64	length;
 	ut8	*data;
 } RBinDwarfBlock;
 
-typedef union {
-	ut64	address;
-	RBinDwarfBlock block;
-	ut64	constant;
-	ut8	flag;
-	ut64	data;
-	st64	sdata;
-	ut64	reference;
-	struct {
-		char	*string;
-		ut64	offset;
-	} str_struct;
-} RBinDwarfAttrEnc;
-
 typedef struct {
-	ut64 name;
-	ut64 form;
-	RBinDwarfAttrEnc encoding;
+	ut64 attr_name;
+	ut64 attr_form;
+	union {
+		ut64 address;
+		RBinDwarfBlock block;
+		ut64 constant;
+		ut8 flag;
+		ut64 data;
+		st64 sdata;
+		ut64 reference;
+		// ut64	offset; // I'll use it for all the new offset forms in DWARF 5
+		struct {
+			const char *content;
+			ut64 offset;
+		} string;
+	};
 } RBinDwarfAttrValue;
 
 typedef struct {
-	ut32	length;
-	ut16	version;
-	ut32	abbrev_offset;
-	ut8	pointer_size;
+	// A 4-byte (or 8 byte for 64bit dwarf) unsigned integer representing the length of the .debug_info contribution
+	// for that compilation unit, not including the length field itself.
+	ut64 length;
+	// A 2-byte unsigned integer representing the version of the DWARF information for that
+	// compilation unit. For DWARF Version 2, the value in this field is 2.
+	ut16 version;
+	// A 4-byte unsigned offset into the .debug_abbrev section. This offset associates the
+	// compilation unit with a particular set of debugging information entry abbreviations
+	ut64 abbrev_offset;
+	// A 1 - byte unsigned integer representing the size in bytes of an address on the target architecture.If the system uses segmented addressing, this value represents the size of the offset portion of an address.
+	ut8 address_size;
+	ut8 unit_type; // DWARF 5 addition
+	ut8 dwo_id; // DWARF 5 addition
+	ut64 type_sig; // DWARF 5 addition
+	ut64 type_offset; // DWARF 5 addition
+	ut64 header_size; // excluding length field
+	bool is_64bit;
 } RBinDwarfCompUnitHdr;
 
 typedef struct {
@@ -646,6 +718,8 @@ typedef struct {
 	ut64	abbrev_code;
 	size_t	length;
 	size_t	capacity;
+	ut64	offset; // important for parsing types
+	ut64	has_children; // important for parsing types
 	RBinDwarfAttrValue *attr_values;
 } RBinDwarfDIE;
 
@@ -674,7 +748,7 @@ typedef struct {
 	ut8 has_children;
 	size_t length;
 	size_t capacity;
-	RBinDwarfAttrSpec *specs;
+	RBinDwarfAttrDef *defs;
 } RBinDwarfAbbrevDecl;
 
 #define DEBUG_ABBREV_CAP	32
@@ -709,28 +783,37 @@ typedef struct {
 } file_entry;
 
 typedef struct {
-	initial_length unit_length;
+	ut64 unit_length;
 	ut16 version;
 	ut64 header_length;
 	ut8 min_inst_len;
 	ut8 max_ops_per_inst;
 	ut8 default_is_stmt;
-	char line_base;
+	st32 line_base;
 	ut8 line_range;
 	ut8 opcode_base;
+	ut8 address_size;
+	ut8 segment_selector_size;
+	bool is_64bit;
+
 	ut8 *std_opcode_lengths;
 	char **include_directories;
 	file_entry *file_names;
 	size_t file_names_count;
-} RBinDwarfLNPHeader;
+} RBinDwarfLineHeader;
 
 #define r_bin_dwarf_line_new(o,a,f,l) o->address=a, o->file = strdup (f?f:""), o->line = l, o->column =0,o
 
-R_API int r_bin_dwarf_parse_info_raw(Sdb *s, RBinDwarfDebugAbbrev *da,
-		const ut8 *obuf, size_t len,
-		const ut8 *debug_str, size_t debug_str_len, int mode);
+typedef struct r_bin_t RBin; // forward declaration so I can keep the functions in this interface
 
+R_API void r_bin_dwarf_parse_types(RBinDwarfDebugInfo *info);
+R_API void r_bin_dwarf_free_debug_info(RBinDwarfDebugInfo *info);
 R_API void r_bin_dwarf_free_debug_abbrev(RBinDwarfDebugAbbrev *da);
+R_API RBinDwarfDebugInfo *r_bin_dwarf_parse_info(RBinDwarfDebugAbbrev *da, RBin *a, int mode);
+R_API RList *r_bin_dwarf_parse_line(RBin *a, int mode);
+R_API RList *r_bin_dwarf_parse_aranges(RBin *a, int mode);
+R_API RBinDwarfDebugAbbrev *r_bin_dwarf_parse_abbrev(RBin *a, int mode);
+
 #ifdef __cplusplus
 }
 #endif

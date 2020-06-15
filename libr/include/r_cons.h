@@ -509,6 +509,7 @@ typedef struct r_cons_t {
 	struct termios term_raw, term_buf;
 #elif __WINDOWS__
 	DWORD term_raw, term_buf, term_xterm;
+	UINT old_cp;
 #endif
 	RNum *num;
 	/* Pager (like more or less) to use if the output doesn't fit on the
@@ -980,7 +981,7 @@ R_API void r_cons_invert(int set, int color);
 R_API bool r_cons_yesno(int def, const char *fmt, ...);
 R_API char *r_cons_input(const char *msg);
 R_API char *r_cons_password(const char *msg);
-R_API void r_cons_set_cup(int enable);
+R_API bool r_cons_set_cup(bool enable);
 R_API void r_cons_column(int c);
 R_API int r_cons_get_column(void);
 R_API char *r_cons_message(const char *msg);

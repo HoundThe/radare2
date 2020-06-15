@@ -83,9 +83,12 @@ static bool r2r_chdir(const char *argv0) {
 			*p = 0;
 			strcat (src_path, R_SYS_DIR"test"R_SYS_DIR);
 			if (r_file_is_directory (src_path)) {
-				(void)chdir (src_path);
-				eprintf ("Running from %s\n", src_path);
-				found = true;
+				if (chdir (src_path) != -1) {
+					eprintf ("Running from %s\n", src_path);
+					found = true;
+				} else {
+					eprintf ("Cannot find '%s' directory\n", src_path);
+				}
 			}
 		}
 	}
@@ -96,8 +99,8 @@ static bool r2r_chdir(const char *argv0) {
 #endif
 }
 
-static void r2r_test_run_unit(void) {
-	system ("make -C unit all run");
+static bool r2r_test_run_unit(void) {
+	return system ("make -C unit all run") == 0;
 }
 
 static bool r2r_chdir_fromtest(const char *test_path) {
@@ -253,7 +256,10 @@ int main(int argc, char **argv) {
 
 	char *cwd = r_sys_getdir ();
 	if (r2r_dir) {
-		chdir (r2r_dir);
+		if (chdir (r2r_dir) == -1) {
+			eprintf ("Cannot find %s directory.\n", r2r_dir);
+			return -1;
+		}
 	} else {
 		bool dir_found = (opt.ind < argc && argv[opt.ind][0] != '.')
 			? r2r_chdir_fromtest (argv[opt.ind])
@@ -308,7 +314,9 @@ int main(int argc, char **argv) {
 				arg++;
 				eprintf ("Category: %s\n", arg);
 				if (!strcmp (arg, "unit")) {
-					r2r_test_run_unit ();
+					if (!r2r_test_run_unit ()) {
+						return -1;
+					}
 					continue;
 				} else if (!strcmp (arg, "fuzz")) {
 					if (!fuzz_dir) {
@@ -466,12 +474,10 @@ beach:
 	free (json_test_file);
 	free (fuzz_dir);
 #if __WINDOWS__
-	(void)SetConsoleOutputCP (old_cp);
-	// chcp doesn't pick up the code page switch for some reason
-	char *chcp = r_str_newf ("chcp %u > NUL", old_cp);
-	if (chcp) {
-		system (chcp);
-		free (chcp);
+	if (old_cp) {
+		(void)SetConsoleOutputCP (old_cp);
+		// chcp doesn't pick up the code page switch for some reason
+		(void)r_sys_cmdf ("chcp %u > NUL", old_cp);
 	}
 #endif
 	return ret;
@@ -521,49 +527,49 @@ static RThreadFunctionRet worker_th(RThread *th) {
 }
 
 static void print_diff(const char *actual, const char *expected) {
-#define DO_DIFF !__WINDOWS__
-#if DO_DIFF
 	RDiff *d = r_diff_new ();
+#ifdef __WINDOWS__
+	d->diff_cmd = "git diff --no-index";
+#endif
 	char *uni = r_diff_buffers_to_string (d, (const ut8 *)expected, (int)strlen (expected), (const ut8 *)actual, (int)strlen (actual));
 	r_diff_free (d);
 
-	RList *lines = r_str_split_duplist (uni, "\n");
+	RList *lines = r_str_split_duplist (uni, "\n", false);
 	RListIter *it;
 	char *line;
+	bool header_found = false;
 	r_list_foreach (lines, it, line) {
-		char c = *line;
-		switch (c) {
-		case '+':
-			printf ("%s", Color_GREEN);
-			break;
-		case '-':
-			printf ("%s", Color_RED);
-			break;
-		default:
-			break;
+		if (!header_found) {
+			if (r_str_startswith (line, "+++ ")) {
+				header_found = true;
+			}
+			continue;
+		}
+		bool color = true;
+		if (r_str_startswith (line, "@@ ") && r_str_endswith (line, " @@")) {
+			printf ("%s", Color_CYAN);
+		} else {
+			char c = *line;
+			switch (c) {
+			case '+':
+				printf ("%s", Color_GREEN);
+				break;
+			case '-':
+				printf ("%s", Color_RED);
+				break;
+			default:
+				color = false;
+				break;
+			}
 		}
 		printf ("%s\n", line);
-		if (c == '+' || c == '-') {
+		if (color) {
 			printf ("%s", Color_RESET);
 		}
 	}
 	r_list_free (lines);
 	free (uni);
 	printf ("\n");
-#else
-	RList *lines = r_str_split_duplist (expected, "\n");
-	RListIter *it;
-	char *line;
-	r_list_foreach (lines, it, line) {
-		printf (Color_RED"- %s"Color_RESET"\n", line);
-	}
-	r_list_free (lines);
-	lines = r_str_split_duplist (actual, "\n");
-	r_list_foreach (lines, it, line) {
-		printf (Color_GREEN"+ %s"Color_RESET"\n", line);
-	}
-	r_list_free (lines);
-#endif
 }
 
 static R2RProcessOutput *print_runner(const char *file, const char *args[], size_t args_size,
@@ -894,6 +900,7 @@ static void replace_cmd_kv_file(const char *path, ut64 line_begin, ut64 line_end
 	} else {
 		eprintf ("Failed to write file \"%s\"\n", path);
 	}
+	free (newc);
 }
 
 static void interact_fix(R2RTestResultInfo *result, RPVector *fixup_results) {
