@@ -815,7 +815,9 @@ static int cmd_info(void *data, const char *input) {
 				switch (input[2]) {
 				case ' ': // "idp file.pdb"
 					r_core_cmdf (core, ".idpi* %s", input + 3);
-					while (input[2]) input++;
+					while (input[2]) {
+						input++;
+					}
 					break;
 				case '\0': // "idp"
 					r_core_cmd0 (core, ".idpi*");
@@ -878,9 +880,9 @@ static int cmd_info(void *data, const char *input) {
 						// Last chance: Check if file is in downstream symbol store
 						if (!file_found) {
 							const char* symstore_path = r_config_get (core->config, "pdb.symstore");
+							const char *base_file = r_file_basename (info->debug_file_name);
 							char* pdb_path = r_str_newf ("%s" R_SYS_DIR "%s" R_SYS_DIR "%s" R_SYS_DIR "%s",
-										     symstore_path, r_file_basename (info->debug_file_name),
-										     info->guid, r_file_basename (info->debug_file_name));
+										     symstore_path, base_file, info->guid, base_file);
 							file_found = r_file_exists (pdb_path);
 							if (file_found) {
 								filename = pdb_path;
@@ -891,7 +893,12 @@ static int cmd_info(void *data, const char *input) {
 					}
 
 					if (!file_found) {
-						eprintf ("File '%s' not found in file directory or symbol store\n", r_file_basename (info->debug_file_name));
+						if (info->debug_file_name) {
+							const char *fn = r_file_basename (info->debug_file_name);
+							eprintf ("File '%s' not found in file directory or symbol store\n", fn);
+						} else {
+							eprintf ("Cannot open file\n");
+						}
 						free (filename);
 						break;
 					}
