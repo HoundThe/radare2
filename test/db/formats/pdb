@@ -9,6 +9,17 @@ PDB "user32.pdb" download success
 EOF
 RUN
 
+NAME=idp 404
+FILE=-
+CMDS=<<EOF
+idp 404.pdb
+EOF
+EXPECT=
+EXPECT_ERR=<<EOF
+Cannot open file
+EOF
+RUN
+
 NAME=idp and baddr
 FILE=-
 CMDS=<<EOF
