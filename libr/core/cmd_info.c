@@ -813,14 +813,14 @@ static int cmd_info(void *data, const char *input) {
 				char *filename;
 
 				switch (input[2]) {
-				case ' ':
+				case ' ': // "idp file.pdb"
 					r_core_cmdf (core, ".idpi* %s", input + 3);
 					while (input[2]) input++;
 					break;
-				case '\0':
+				case '\0': // "idp"
 					r_core_cmd0 (core, ".idpi*");
 					break;
-				case 'd':
+				case 'd': // "idpd"
 					pdbopts.user_agent = (char*) r_config_get (core->config, "pdb.useragent");
 					pdbopts.extract = r_config_get_i (core->config, "pdb.extract");
 					pdbopts.symbol_store_path = (char*) r_config_get (core->config, "pdb.symstore");
@@ -843,7 +843,7 @@ static int cmd_info(void *data, const char *input) {
 					r_list_free (server_l);
 					input++;
 					break;
-				case 'i':
+				case 'i': // "idpi"
 					info = r_bin_get_info (core->bin);
 					filename = strchr (input, ' ');
 					while (input[2]) input++;
@@ -895,8 +895,8 @@ static int cmd_info(void *data, const char *input) {
 						free (filename);
 						break;
 					}
-					ut64 baddr = 0;
-					if (core->bin->cur && core->bin->cur->o) {
+					ut64 baddr = r_config_get_i (core->config, "bin.baddr");
+					if (core->bin->cur && core->bin->cur->o && core->bin->cur->o->baddr) {
 						baddr = core->bin->cur->o->baddr;
 					} else {
 						eprintf ("Warning: Cannot find base address, flags will probably be misplaced\n");
