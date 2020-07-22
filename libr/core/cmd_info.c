@@ -902,13 +902,7 @@ static int cmd_info(void *data, const char *input) {
 						free (filename);
 						break;
 					}
-					ut64 baddr = r_config_get_i (core->config, "bin.baddr");
-					if (core->bin->cur && core->bin->cur->o && core->bin->cur->o->baddr) {
-						baddr = core->bin->cur->o->baddr;
-					} else {
-						eprintf ("Warning: Cannot find base address, flags will probably be misplaced\n");
-					}
-					r_core_pdb_info (core, filename, baddr, mode);
+					r_core_pdb_info (core, filename, UT64_MAX, mode);
 					free (filename);
 					break;
 				case '?':
