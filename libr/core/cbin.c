@@ -1189,7 +1189,16 @@ static int bin_dwarf(RCore *core, int mode) {
 	return true;
 }
 
-R_API int r_core_pdb_info(RCore *core, const char *file, ut64 baddr, int mode) {
+R_API bool r_core_pdb_info(RCore *core, const char *file, ut64 baddr, int mode) {
+	r_return_val_if_fail (core && file, false);
+	if (baddr == UT64_MAX) {
+		baddr = r_config_get_i (core->config, "bin.baddr");
+		if (core->bin->cur && core->bin->cur->o && core->bin->cur->o->baddr) {
+			baddr = core->bin->cur->o->baddr;
+		} else {
+			eprintf ("Warning: Cannot find base address, flags will probably be misplaced\n");
+		}
+	}
 	R_PDB pdb = R_EMPTY;
 
 	pdb.cb_printf = r_cons_printf;
