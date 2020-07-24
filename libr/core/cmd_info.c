@@ -902,7 +902,7 @@ static int cmd_info(void *data, const char *input) {
 						free (filename);
 						break;
 					}
-					r_core_pdb_info (core, filename, UT64_MAX, mode);
+					r_core_pdb_info (core, filename, mode);
 					free (filename);
 					break;
 				case '?':
